@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 向USER_MESSAG表中添加新的用户信息 -->
+<mapper namespace="com.example.demo.dao.UserMessageDao">
+	<!-- 向USER_MESSAGE表中添加新的用户信息 -->
+	<!-- id属性:设置对应接口中的方法名称 -->
+	<!-- parameterType属性: 设置方法的参数类型 -->
+	<insert id="insert"
+		parameterType="com.example.demo.entity.UserMessage">
+		insert into
+		user_message(user_name,user_password,user_birthday,user_email,user_sex)
+		values(#{userName},#{userPassword},#{userBirthday},#{userEmail},#{userSex});
+	</insert>
+
+	<!-- 修改USER_MESSAGE表中指定USER_ID的用户的USER_NAME -->
+	<update id="updateUserNameById"
+		parameterType="com.example.demo.entity.UserMessage">
+		update user_message set user_name = #{userName} where
+		user_id = #{userId};
+	</update>
+	
+	<delete id="deleteUserById" parameterType="Integer">
+		delete from user_message where user_id = #{userId};
+	</delete>
+	
+	<select id="selectAll" resultType="com.example.demo.entity.UserMessage">
+		select user_id,user_name,user_password,user_email,user_birthday,user_sex from user_message;
+	</select>
+
+</mapper>

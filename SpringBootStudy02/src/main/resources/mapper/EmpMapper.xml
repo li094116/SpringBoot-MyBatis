@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.EmpDao">
+	<select id="selectByEmpId" parameterType="Integer" resultMap="empResultMap">
+		select e.emp_id,e.emp_name,e.emp_salary,d.dept_id,d.dept_name 
+		from emp e join dept d on e.dept_id=d.dept_id where e.emp_id = #{empId};
+	</select>
+	
+	<resultMap type="com.example.demo.entity.Emp" id="empResultMap">
+		<id column="emp_id" property="empId"/>
+		<result column="emp_name" property="empName"/>
+		<result column="emp_salary" property="empSalary"/>
+		<result column="dept_id" property="deptId"/>
+		<association property="dept" javaType="com.example.demo.entity.Dept">
+			<id column="dept_id" property="deptId"/>
+			<result column="dept_name" property="deptName"/>
+		</association>
+	</resultMap>
+	
+	<select id="selectEmps" parameterType="com.example.demo.entity.Emp" resultType="com.example.demo.entity.Emp">
+		select emp_id,emp_name,emp_salary,dept_id 
+		from emp 
+		<!-- trim会自动在第一个条件前面加where关键字 -->
+		<!-- 如果第一个条件的前面有and或or关键字时，trim标签会自动删除and与or关键字，在添加where关键字 -->
+		<trim prefix="where" prefixOverrides="and|or">
+			<!-- 当test属性为true时，执行if标签内的代码 -->
+			<if test="empName!=null and empName!=''">
+				emp_name like #{empName}
+			</if>
+			<if test="deptId!=null">
+				and dept_id=#{deptId}
+			</if>
+		</trim>
+	</select>
+	
+	<update id="updateEmp" parameterType="com.example.demo.entity.Emp">
+		update emp
+		<set>
+			<if test="empName!=null and empName!=''">
+				emp_name=#{empName},
+			</if>
+			<if test="empSalary!=null">
+				emp_salary=#{empSalary}
+			</if>
+		</set>
+		where emp_id=#{empId}
+	</update>
+</mapper>
